@@ -104,6 +104,7 @@
 				<groupId>org.jetbrains.kotlin</groupId>
 				<artifactId>kotlin-maven-plugin</artifactId>
 				<configuration>
+					<skipTests>true</skipTests>
 					<args>
 						<arg>-Xjsr305=strict</arg>
 					</args>

@@ -38,15 +38,15 @@ const DiceRoller = () => {
       try {
         setIsRolling(true);
         
-        // First, trigger the 3D dice animation
+        // Trigger the 3D dice animation
         const diceResults = await diceBoxRef.current.roll('1d20');
-        console.log(diceResults);
-        // Then, send the roll to the backend
+        // Send the roll to the backend
         const rollResponse = await rollDice({
-          notation: String(diceResults.dieType),
+          notation: diceResults[0].dieType,
+          score: diceResults[0].value,
           rollType: 'check', // default to check
         });
-        
+        setLastRoll(rollResponse);
       } catch (error) {
         console.error('Error rolling dice:', error);
       } finally {

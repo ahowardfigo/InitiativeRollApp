@@ -1,5 +1,6 @@
 export interface DiceRollRequest {
   notation: string;
+  score: number;
   modifier?: number;
   advantage?: boolean;
   disadvantage?: boolean;

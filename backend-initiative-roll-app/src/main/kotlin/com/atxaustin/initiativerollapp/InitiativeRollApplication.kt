@@ -1,4 +1,4 @@
-package com.atxaustin.dnd_roller_app_backend
+package com.atxaustin.initiativerollapp
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

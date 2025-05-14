@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { DiceRollRequest } from '../types/api';
+import type { DiceRollRequest, DiceRollResponse } from '../types/api';
 
 // Create axios instance with base configuration
 const apiClient = axios.create({
@@ -10,9 +10,9 @@ const apiClient = axios.create({
 });
 
 // API functions
-export const rollDice = async (rollRequest: DiceRollRequest): Promise<void> => {
+export const rollDice = async (rollRequest: DiceRollRequest): Promise<DiceRollResponse> => {
   try {
-    const response = await apiClient.post('/roll', rollRequest);
+    const response = await apiClient.post<DiceRollResponse>('/roll', rollRequest);
     return response.data;
   } catch (error) {
     // We'll want to handle this better in production
