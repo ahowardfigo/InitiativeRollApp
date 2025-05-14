@@ -12,7 +12,7 @@ const apiClient = axios.create({
 // API functions
 export const rollDice = async (rollRequest: DiceRollRequest): Promise<DiceRollResponse> => {
   try {
-    const response = await apiClient.post<DiceRollResponse>('/roll', rollRequest);
+    const response = await apiClient.post<DiceRollResponse>('/rolls', rollRequest);
     return response.data;
   } catch (error) {
     // We'll want to handle this better in production

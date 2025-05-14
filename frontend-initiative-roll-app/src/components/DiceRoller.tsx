@@ -42,9 +42,10 @@ const DiceRoller = () => {
         const diceResults = await diceBoxRef.current.roll('1d20');
         // Send the roll to the backend
         const rollResponse = await rollDice({
-          notation: diceResults[0].dieType,
-          score: diceResults[0].value,
+          diceType: diceResults[0].dieType,
+          baseScore: diceResults[0].value,
           rollType: 'check', // default to check
+          modifier: 3,
         });
         setLastRoll(rollResponse);
       } catch (error) {
@@ -72,11 +73,12 @@ const DiceRoller = () => {
         </button>
         {lastRoll && (
           <div className="text-center">
-            <p className="text-lg font-bold">Result: {lastRoll.total}</p>
-            <p className="text-sm text-gray-600">
-              Roll ID: {lastRoll.id}
-              {lastRoll.modifier && ` (${lastRoll.modifier >= 0 ? '+' : ''}${lastRoll.modifier})`}
+            <p className="text-sm text-gray-600">Roll Type: {lastRoll.rollType}</p>
+            <p className="text-lg font-bold">Base: {lastRoll.baseScore}</p>
+            <p className="text-lg font-bold">Modifier: {lastRoll.modifier ? 
+              `${lastRoll.modifier >= 0 ? '+' : '-'}${lastRoll.modifier}` : '0'}
             </p>
+            <p className="text-lg font-bold">Total: {lastRoll.totalScore}</p>
           </div>
         )}
       </div>

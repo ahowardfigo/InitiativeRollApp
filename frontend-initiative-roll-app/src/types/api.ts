@@ -1,20 +1,22 @@
 export interface DiceRollRequest {
-  notation: string;
-  score: number;
+  diceType: string;
+  baseScore: number;
   modifier?: number;
-  advantage?: boolean;
-  disadvantage?: boolean;
-  rollType?: 'initiative' | 'attack' | 'save' | 'check' | 'damage';
+  rollType: 'initiative' | 'attack' | 'save' | 'check' | 'damage';
+  playerId?: string;
+  characterName?: string;
+  tableId?: string;
 }
 
 export interface DiceRollResponse {
-  id: string;
-  timestamp: string;
-  notation: string;
-  results: number[];
-  total: number;
+  id: number;
+  rollType: 'initiative' | 'attack' | 'save' | 'check' | 'damage';
+  diceType: string;
+  baseScore: number;
   modifier?: number;
-  advantage?: boolean;
-  disadvantage?: boolean;
-  rollType?: 'initiative' | 'attack' | 'save' | 'check' | 'damage';
+  totalScore: number;
+  playerId?: string;
+  characterName?: string;
+  tableId?: string;
+  timestamp: string;
 } 

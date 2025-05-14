@@ -1,6 +1,8 @@
 package com.atxaustin.initiativerollapp.service
 
 import com.atxaustin.initiativerollapp.model.DiceRoll
+import com.atxaustin.initiativerollapp.model.DiceRollResponse
+import com.atxaustin.initiativerollapp.model.toResponse
 import com.atxaustin.initiativerollapp.repository.DiceRollRepository
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
@@ -19,7 +21,7 @@ class DiceRollService(
         playerId: String?,
         characterName: String?,
         tableId: String?
-    ): DiceRoll {
+    ): DiceRollResponse {
         
         val totalScore = baseScore + (modifier ?: 0)
         
@@ -37,9 +39,9 @@ class DiceRollService(
         val savedRoll = diceRollRepository.save(diceRoll)
         
         // Broadcast the roll to all players in the table
-        //messagingTemplate.convertAndSend("/topic/table/$tableId", savedRoll)
+        messagingTemplate.convertAndSend("/topic/table/$tableId", savedRoll)
         
-        return savedRoll
+        return savedRoll.toResponse()
     }
 
     fun getRollsByTable(tableId: String): List<DiceRoll> =
