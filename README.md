@@ -1,5 +1,3 @@
-# React + TypeScript + Vite
-
 # D&D Initiative Tracker
 
 A real-time D&D initiative and dice rolling tracker built with React and @3d-dice/dice-box.
@@ -15,6 +13,10 @@ A real-time D&D initiative and dice rolling tracker built with React and @3d-dic
 
 ## Setup
 
+Change directory into the frontend follow the steps 
+
+ `cd frontend-initiative-roll-app`
+
 1. Install dependencies:
 ```bash
 npm install
@@ -23,7 +25,7 @@ npm install
 2. Copy dice assets:
 After installation, the @3d-dice/dice-box package will prompt for the assets directory location. The default is `/public/assets`. If you miss this prompt, manually copy the assets from:
 ```bash
-node_modules/@3d-dice/dice-box
+node_modules/@3d-dice/dice-box/*
 ```
 to:
 ```bash
