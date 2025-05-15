@@ -1,6 +1,7 @@
 package com.atxaustin.initiativerollapp.controller
 
 import com.atxaustin.initiativerollapp.model.DiceRoll
+import com.atxaustin.initiativerollapp.model.DiceRollResponse
 import com.atxaustin.initiativerollapp.service.DiceRollService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -21,7 +22,7 @@ class DiceRollController(private val diceRollService: DiceRollService) {
     )
 
     @PostMapping
-    fun rollDice(@RequestBody request: RollRequest): ResponseEntity<DiceRoll> {
+    fun rollDice(@RequestBody request: RollRequest): ResponseEntity<DiceRollResponse> {
         val roll = diceRollService.processRoll(
             baseScore = request.baseScore,
             diceType = request.diceType,
