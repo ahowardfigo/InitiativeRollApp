@@ -18,7 +18,7 @@ class KafkaConsumerService(
     @KafkaListener(topics = ["dice-rolls"], groupId = "initiative-group", containerFactory = "diceRollKafkaListenerContainerFactory")
     fun consumeDiceRoll(roll: DiceRoll) {
         logger.info("Received dice roll: $roll")
-        val topic = "/topic/table/${roll.tableId}"
+        val topic = "/topic/table"
         messagingTemplate.convertAndSend(topic, roll)
         logger.info("Sent dice roll to WebSocket topic: $topic")
     }

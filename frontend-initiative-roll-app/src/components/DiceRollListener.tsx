@@ -23,7 +23,7 @@ const DiceRollListener: React.FC = () => {
         console.log('Connected to WebSocket');
 
         // Replace 123 with the actual table ID if dynamic
-        stompClient.subscribe('/topic/table/123', (message) => {
+        stompClient.subscribe('/topic/table', (message) => {
           const payload: DiceRoll = JSON.parse(message.body);
           console.log('Received:', payload);
           setRoll(payload);
