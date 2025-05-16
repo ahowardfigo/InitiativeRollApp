@@ -1,70 +1,86 @@
 import React, { useEffect, useState } from 'react';
 import SockJS from 'sockjs-client/dist/sockjs';
 import { Client } from '@stomp/stompjs';
+import type { EventMessage, PlayerEvent } from '../types/types';
+import type { DiceRollResponse } from '../types/api';
+import { COLORS } from '../styles/sharedStyles';
 
-interface DiceRoll {
-  rollerId: string;
-  tableId: string;
-  result: number;
-  diceType: string;
-  timestamp: string;
-}
 
-const DiceRollListener: React.FC = () => {
-  const [roll, setRoll] = useState<DiceRoll | null>(null);
-  const [connected, setConnected] = useState(false);
+export const DiceRollListener: React.FC = () => {
 
-  useEffect(() => {
-    const socket = new SockJS('http://localhost:8080/ws'); // Adjust backend port if needed
-    const stompClient = new Client({
-      webSocketFactory: () => socket,
-      onConnect: () => {
-        setConnected(true);
-        console.log('Connected to WebSocket');
+     const containerStyle: React.CSSProperties = {
+        backgroundColor: COLORS.veryDark,
+        flex: 1,
+        borderRadius: '10px',
+        marginLeft: '1rem',
+        padding: '1rem',
+        color: COLORS.offWhite,
+        fontSize: '1.25rem',
+        minHeight: '300px',
+        overflowY: 'auto'
+    }
 
-        // Replace 123 with the actual table ID if dynamic
-        stompClient.subscribe('/topic/table', (message) => {
-          const payload: DiceRoll = JSON.parse(message.body);
-          console.log('Received:', payload);
-          setRoll(payload);
-        });
-      },
-      onDisconnect: () => {
-        console.log('Disconnected from WebSocket');
-        setConnected(false);
-      },
-      debug: (str) => {
-        // Uncomment for verbose logs
-        // console.log(str);
-      },
-    });
+    const [messages, setMessages] = useState<string[]>([]);
+    
+    useEffect(() => {
+        const sock = new SockJS('http://localhost:8080/ws');
+        const stompClient = new Client({
+            webSocketFactory: () => sock,
+            debug: (str) => console.log(str),
+            reconnectDelay: 5000,
+          });
 
-    stompClient.activate();
+          stompClient.onConnect = (frame) => {
+            console.log('Connected: ', frame);
+            stompClient.subscribe('/topic/table', (message) => {
+              if (message.body) {
+                const event = JSON.parse(message.body) as EventMessage;
+      
+                let displayMessage = '';
+                switch (event.type) {
+                  case 'DICE_ROLL': {
+                    const roll = event.payload as DiceRollResponse;
+                    displayMessage = `${roll.characterName} has rolled ${roll.totalScore} for their ${roll.rollType}`;
+                    break;
+                  }
+                  case 'PLAYER_EVENT': {
+                    const { type: eventType, player } = event.payload as PlayerEvent;
+                    const { playerName, character } = player;
+                    const { level, race, characterName, characterClass } = character;
 
-    return () => {
-      stompClient.deactivate();
-    };
-  }, []);
+                    if (eventType === 'JOIN') {
+                        displayMessage = `${playerName} has joined table as ${characterName} a level ${level} ${race} ${characterClass}`;
+                    } else if (eventType === 'LEAVE') {
+                        displayMessage = `${playerName} (${characterName}) has left the table`;
+                    }
+                    break;
+                  }   
+                }
+      
+                setMessages((prev) => [...prev, displayMessage].slice(-10));
+              }
+            });
+          };
+      
+          stompClient.activate();
+      
+          return () => {
+            stompClient.deactivate();
+          };
+        }, []);
 
-  return (
-    <div className="p-4 border rounded shadow max-w-md mx-auto mt-10">
-      <h2 className="text-xl font-semibold mb-2">WebSocket Listener</h2>
-      {connected ? (
-        roll ? (
-          <div className="text-green-700">
-            <p><strong>Roller:</strong> {roll.rollerId}</p>
-            <p><strong>Dice:</strong> {roll.diceType}</p>
-            <p><strong>Result:</strong> {roll.result}</p>
-            <p><strong>Time:</strong> {new Date(roll.timestamp).toLocaleString()}</p>
-          </div>
-        ) : (
-          <p className="text-gray-500">Waiting for roll...</p>
-        )
-      ) : (
-        <p className="text-red-600">Connecting to WebSocket...</p>
-      )}
+    return (
+    <div style={containerStyle}>
+        <div className="bg-gray-100 p-4 rounded-lg max-h-60 overflow-y-auto">
+            <h3 className="text-lg font-semibold mb-2">Recent Events</h3>
+            <ul className="space-y-2">
+                {messages.map((message, index) => (
+                    <li key={index} className="text-sm text-gray-700 bg-white p-2 rounded shadow">
+                        {message}
+                    </li>
+                ))}
+            </ul>
+        </div>
     </div>
-  );
+    );
 };
-
-export default DiceRollListener;

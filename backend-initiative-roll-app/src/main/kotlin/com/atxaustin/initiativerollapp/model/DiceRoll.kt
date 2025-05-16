@@ -15,6 +15,7 @@ class DiceRoll(
     val modifier: Int? = null,
     val totalScore: Int,
     val playerId: String? = null,
+    val playerName: String? = null,
     val characterName: String? = null,
     val tableId: String? = null,
     val timestamp: Instant = Instant.now()
@@ -28,6 +29,7 @@ data class DiceRollResponse(
     val modifier: Int?,
     val totalScore: Int,
     val playerId: String?,
+    val playerName: String?,
     val characterName: String?,
     val tableId: String?,
     val timestamp: String
@@ -41,6 +43,7 @@ fun DiceRoll.toResponse(): DiceRollResponse = DiceRollResponse(
     modifier = this.modifier,
     totalScore = this.totalScore,
     playerId = this.playerId,
+    playerName = this.playerName,
     characterName = this.characterName,
     tableId = this.tableId,
     timestamp = this.timestamp.toString()

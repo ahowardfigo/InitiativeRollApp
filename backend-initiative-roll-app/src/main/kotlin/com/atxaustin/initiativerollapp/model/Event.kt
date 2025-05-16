@@ -1,16 +1,15 @@
 package com.atxaustin.initiativerollapp.model
 
-data class PlayerEvent(
-    val type: String, // e.g., "JOIN" or "EXIT"
-    val tableId: String,
-    val playerId: String,
-    val playerName: String,
-    val characterName: String,
-
-)
+import java.time.Instant
 
 data class EventMessage(
-    val type: String,
+    val type: EventType,
     val payload: Any,
     val timestamp: String = Instant.now().toString()
 )
+
+enum class EventType {
+    DICE_ROLL,
+    PLAYER_EVENT
+}
+

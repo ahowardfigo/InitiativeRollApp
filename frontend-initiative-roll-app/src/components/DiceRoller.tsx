@@ -1,9 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
+import { usePlayerContext } from '../context/PlayerContext';
 import DiceBox from '@3d-dice/dice-box';
-import { rollDice } from '../api/client';
+import { rollDice, sendPlayerEvent } from '../api/client';
 import type { DiceRollResponse } from '../types/api';
+import { buttonStyle, COLORS } from '../styles/sharedStyles';
+import { DiceRollControls } from './DiceRollControls';
 
-const DiceRoller = () => {
+interface DiceRollerProps {
+  setIsModalOpen: (isOpen: boolean) => void;
+}
+
+const DiceRoller = ({ setIsModalOpen }: DiceRollerProps) => {
+
+  const containerStyle: React.CSSProperties = {
+      backgroundColor: COLORS.darkRed, // lighter shade of darkRed
+      flex: 1,
+      borderRadius: '10px',
+      marginRight: '1rem',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: COLORS.offWhite,
+      fontSize: '1.5rem',
+      minHeight: '300px',
+    }
+
+  const { player, setPlayer } = usePlayerContext();
+  const character = player?.character;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const diceBoxRef = useRef<any>(null);
   const [lastRoll, setLastRoll] = useState<DiceRollResponse | null>(null);
@@ -16,7 +40,9 @@ const DiceRoller = () => {
         assetPath: "/assets/dice-box/",
         theme: "default",
         themeColor: "#30a0e0",
+        backgroundColor: "#fdf6e3",
         gravity: 1,
+        scale: 2,
       });
 
       // Initialize the dice box
@@ -45,6 +71,8 @@ const DiceRoller = () => {
           diceType: diceResults[0].dieType,
           baseScore: diceResults[0].value,
           rollType: 'check', // default to check
+          playerName: player?.playerName,
+          characterName: character?.characterName,
           modifier: 3,
         });
         setLastRoll(rollResponse);
@@ -56,32 +84,32 @@ const DiceRoller = () => {
     }
   };
 
+  const handleLeave = async () => {
+    if (!player) return;
+    await sendPlayerEvent({ type: 'LEAVE',  player: player, tableId: 'default' });
+  
+    setPlayer(null);
+    setLastRoll(null);
+    setIsModalOpen(true);
+
+    if (diceBoxRef.current) {
+      diceBoxRef.current.reset(); 
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <div style={containerStyle} className="relative">
       <div
         id="dice-container"
         ref={containerRef}
-        className="w-full h-[400px] bg-slate-800 rounded-lg shadow-lg"
+        className="w-full h-full bg-yellow-100 rounded-lg shadow-lg"
       />
-      <div className="flex flex-col items-center gap-2">
-        <button
-          onClick={handleRoll}
-          disabled={isRolling}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isRolling ? 'Rolling...' : 'Roll d20'}
-        </button>
-        {lastRoll && (
-          <div className="text-center">
-            <p className="text-sm text-gray-600">Roll Type: {lastRoll.rollType}</p>
-            <p className="text-lg font-bold">Base: {lastRoll.baseScore}</p>
-            <p className="text-lg font-bold">Modifier: {lastRoll.modifier ? 
-              `${lastRoll.modifier >= 0 ? '+' : '-'}${lastRoll.modifier}` : '0'}
-            </p>
-            <p className="text-lg font-bold">Total: {lastRoll.totalScore}</p>
-          </div>
-        )}
-      </div>
+      <DiceRollControls
+        isRolling={isRolling}
+        onRoll={handleRoll}
+        onLeave={handleLeave}
+        lastRoll={lastRoll}
+      />
     </div>
   );
 };

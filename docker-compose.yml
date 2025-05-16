@@ -11,7 +11,7 @@ services:
       - "2181:2181"
 
   kafka:
-    image: confluentinc/cp-kafka:7.4.0
+    image: confluentinc/cp-kafka:7.6.0
     container_name: kafka
     depends_on:
       - zookeeper
@@ -42,6 +42,21 @@ services:
       CONTROL_CENTER_REPLICATION_FACTOR: 1
       CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
 
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: dnd_db
+      MYSQL_USER: dnd_user
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+
+
   schema-registry:
     image: confluentinc/cp-schema-registry:7.4.0
     container_name: schema-registry
@@ -53,3 +68,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+volumes:
+  db_data:
+
