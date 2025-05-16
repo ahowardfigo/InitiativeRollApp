@@ -15,7 +15,7 @@ A Spring Boot backend service for the D&D Initiative Tracker application, built 
 - Spring Boot
 - Spring Data JPA
 - Spring WebSocket
-- H2 Database (default)
+- Spring Kafka
 
 ## Setup
 
@@ -27,7 +27,7 @@ A Spring Boot backend service for the D&D Initiative Tracker application, built 
 ```bash
 mvn clean install
 ```
-
+note: add the flag  `-DskipTests` if build error 
 3. Run the application:
 ```bash
 mvn spring-boot:run
@@ -39,22 +39,29 @@ The server will start on `localhost:8080`.
 
 ### REST Endpoints
 
-- `POST /api/rolls` - Make a new dice roll
-- `GET /api/rolls/table/{tableId}` - Get all rolls for a table
-- `GET /api/rolls/table/{tableId}/player/{playerId}` - Get all rolls for a player in a table
+- `POST /api/rolls` - Make a new dice roll that sends dice roll event
+- `POST /api/player/event` - Sends a player event 
 
 ### WebSocket Endpoints
 
 - `/ws` - WebSocket connection endpoint
-- `/topic/table/{tableId}` - Subscribe to receive real-time roll updates for a specific table
+- `/topic/table` - Subscribe to receive real-time roll updates for a specific table
 
 ## Development
 
 The application uses:
-- H2 in-memory database by default
 - JPA for data persistence
+- mySql as database
+- Spring Kafka for event processing
 - WebSocket for real-time communication
 - Spring Security for CORS configuration
+
+## Docker
+This application requires the use of Docker to host the mySql database and Kafka. To spin up a docker instance run the docker command 
+
+```bash 
+docker compose up --build
+```
 
 ## Frontend Integration
 
@@ -62,3 +69,4 @@ The backend is configured to work with the frontend running on `localhost:5173` 
 To change this, update the CORS configuration in:
 - `WebSocketConfig.kt`
 - `DiceRollController.kt`
+- `PlayerConroller.kt`

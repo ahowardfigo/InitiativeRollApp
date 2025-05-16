@@ -11,46 +11,39 @@ A real-time D&D initiative and dice rolling tracker built with React and @3d-dic
 - Real-time updates via WebSocket
 - Beautiful 3D dice animations
 
-## Setup
+## 🐳 Running with Docker Compose
 
-Change directory into the frontend follow the steps 
+To spin up the full stack with Docker:
 
- `cd frontend-initiative-roll-app`
+### 1. Prerequisites
+- Docker + Docker Compose installed
 
-1. Install dependencies:
+### 2. Run the app
 ```bash
-npm install
-```
+docker-compose up --build
 
-2. Copy dice assets:
-After installation, the @3d-dice/dice-box package will prompt for the assets directory location. The default is `/public/assets`. If you miss this prompt, manually copy the assets from:
-```bash
-node_modules/@3d-dice/dice-box/*
-```
-to:
-```bash
-public/assets/dice-box
-```
+## Hosting
+Frontend: http://localhost:5173
+- follow directions in the README.md in frontend directory for frontend setup and hosting
 
-3. Start the development server:
-```bash
-npm run dev
-```
-
+Backend: http://localhost:8080
+- follow directions in the README.md in backend directory for backend setup and hosting
 ## Usage
 
-1. Enter your name and either create a new table or join an existing one
-2. Create your character by entering their details
-3. Once at the table, select your roll type and modifier
-4. Click the roll button to roll the dice
+1. Enter your name and character
+2. Once at the table, select your roll type and modifier
+3. Click the roll button to roll the dice
 5. Watch the 3D dice animation and see results in the side panel
 6. All rolls are broadcast to other players in real-time
 
 ## Development
 
-- Built with Vite + React + TypeScript
-- Uses TailwindCSS for styling
+- Built with Vite + React + TypeScript on frontend
+- Built with Kotlin and Spring Boot on backend
+- mySql for persistence layer
+- Kafka for event messaging
 - WebSocket integration for real-time updates
+- Docker for hosting kafka and mySql services
 - @3d-dice/dice-box for 3D dice rolling
 
 ## Backend Requirements
