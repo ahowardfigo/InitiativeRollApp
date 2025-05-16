@@ -3,7 +3,7 @@ import { usePlayerContext } from '../context/PlayerContext';
 import DiceBox from '@3d-dice/dice-box';
 import { rollDice, sendPlayerEvent } from '../api/client';
 import type { DiceRollResponse } from '../types/api';
-import { buttonStyle, COLORS } from '../styles/sharedStyles';
+import { COLORS } from '../styles/sharedStyles';
 import { DiceRollControls } from './DiceRollControls';
 
 interface DiceRollerProps {
@@ -13,16 +13,17 @@ interface DiceRollerProps {
 const DiceRoller = ({ setIsModalOpen }: DiceRollerProps) => {
 
   const containerStyle: React.CSSProperties = {
-      backgroundColor: COLORS.darkRed, // lighter shade of darkRed
       flex: 1,
+      width: '100%',
       borderRadius: '10px',
       marginRight: '1rem',
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      flexDirection: 'column',
       color: COLORS.offWhite,
+      backgroundImage: 'url(/assets/woodgrain2.jpg)',
       fontSize: '1.5rem',
       minHeight: '300px',
+      position: 'relative',
     }
 
   const { player, setPlayer } = usePlayerContext();
@@ -35,6 +36,9 @@ const DiceRoller = ({ setIsModalOpen }: DiceRollerProps) => {
 
   useEffect(() => {
     if (containerRef.current && !diceBoxRef.current) {
+
+      const containerWidth = containerRef.current?.offsetWidth || 600;
+      const scale = containerWidth / 25; // Adjust divisor to taste
       // Create new DiceBox instance
       diceBoxRef.current = new DiceBox("#dice-container", {
         assetPath: "/assets/dice-box/",
@@ -42,7 +46,7 @@ const DiceRoller = ({ setIsModalOpen }: DiceRollerProps) => {
         themeColor: "#30a0e0",
         backgroundColor: "#fdf6e3",
         gravity: 1,
-        scale: 2,
+        scale: scale,
       });
 
       // Initialize the dice box
@@ -62,6 +66,7 @@ const DiceRoller = ({ setIsModalOpen }: DiceRollerProps) => {
   const handleRoll = async () => {
     if (diceBoxRef.current && !isRolling) {
       try {
+        setLastRoll(null);
         setIsRolling(true);
         
         // Trigger the 3D dice animation
@@ -98,18 +103,37 @@ const DiceRoller = ({ setIsModalOpen }: DiceRollerProps) => {
   };
 
   return (
-    <div style={containerStyle} className="relative">
+    <div style={containerStyle}>
       <div
         id="dice-container"
         ref={containerRef}
-        className="w-full h-full bg-yellow-100 rounded-lg shadow-lg"
+        style={{
+          flexGrow: 1,
+          width: '100%',
+          height: '100%',
+          minHeight: '400px', // force a visible height
+          position: 'relative',
+          background: 'rgba(0,0,0,0.1)',
+          borderRadius: '8px',
+          overflow: 'visible',
+        }}
       />
+      <div style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        padding: '1rem',
+        display: 'flex',
+        justifyContent: 'center',
+      }}>
       <DiceRollControls
         isRolling={isRolling}
         onRoll={handleRoll}
         onLeave={handleLeave}
         lastRoll={lastRoll}
       />
+      </div>
     </div>
   );
 };
