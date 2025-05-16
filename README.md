@@ -21,13 +21,16 @@ To spin up the full stack with Docker:
 ### 2. Run the app
 ```bash
 docker-compose up --build
+```
 
 ## Hosting
-Frontend: http://localhost:5173
-- follow directions in the README.md in frontend directory for frontend setup and hosting
 
-Backend: http://localhost:8080
-- follow directions in the README.md in backend directory for backend setup and hosting
+Frontend: `http://localhost:5173`
+Follow directions in the README.md in frontend directory for frontend setup and hosting
+
+Backend: `http://localhost:8080`
+Follow directions in the README.md in backend directory for backend setup and hosting
+
 ## Usage
 
 1. Enter your name and character
